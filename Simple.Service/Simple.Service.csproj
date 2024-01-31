@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Simple.Inputs\Simple.Model.csproj" />
+    <ProjectReference Include="..\Simple.Service.Interfaces\Simple.Service.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
