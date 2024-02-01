@@ -6,7 +6,7 @@ public class Address : Entity<int>
 {
     public string Street { get; set; } = default!;
     public string City { get; set; } = default!;
-    public int? PostCode { get; set; }
+    public string? PostCode { get; set; }
 
     [NotMapped]
     public User User { get; set; } = default!;
