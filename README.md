@@ -39,3 +39,7 @@
 <br/><br/>
 <b>Image6</b>:<br/>
 ![image](https://github.com/th3lasta1rb3nd3r/exerciserestapi/assets/25145803/058ce87f-b28f-437a-af01-13feb2b264a0)
+
+<br /><br />
+Sample: <br />
+![image](https://github.com/th3lasta1rb3nd3r/exerciserestapi/assets/25145803/06ecf352-fefb-491a-b4b2-ae9a8ad64a89)
