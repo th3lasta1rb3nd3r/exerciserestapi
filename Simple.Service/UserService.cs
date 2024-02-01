@@ -36,7 +36,7 @@ public class UserService(
 
             if (input.Address is not null)
             {
-                var address = new Address();
+                var address = new Address() {  Id = user.Id};
                 SetAddress(address, input.Address);
                 sampleDataDbContext.Addresses.Add(address);
                 await sampleDataDbContext.SaveChangesAsync(cancellationToken);
@@ -78,7 +78,7 @@ public class UserService(
                 var address = sampleDataDbContext.Addresses.SingleOrDefault(e => e.Id == input.UserId);
                 if (address is null)
                 {
-                    address = new();
+                    address = new() {  Id = existingUser.Id};
                     SetAddress(address, input.Address);
                     sampleDataDbContext.Addresses.Add(address);
                     await sampleDataDbContext.SaveChangesAsync(cancellationToken);
