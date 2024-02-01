@@ -24,6 +24,12 @@ internal static class UpdateUserInputValidator
             errors.AddRange(input.User.Validate());
         }
 
+        if(input.User.EmailAddress is not null && 
+            simpleDataDbContext.Users.Any(e => e.Id != input.UserId && e.EmailAddress == input.User.EmailAddress))
+        {
+            errors.Add(new DuplicateEmailAddessError());
+        }
+
         if (input.Address is not null)
         {
             errors.AddRange(input.Address.Validate());

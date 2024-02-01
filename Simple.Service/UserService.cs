@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Simple.Data;
 using Simple.Model;
+using Simple.Model.Errors;
 using Simple.Model.Inputs;
 using Simple.Service.Extensions;
 using Simple.Service.Interfaces;
@@ -30,23 +31,23 @@ public class UserService(
 
             var user = new User();
             SetUser(user, input.User);
-            var addedUser = sampleDataDbContext.Users.Add(user);
+            sampleDataDbContext.Users.Add(user);
             await sampleDataDbContext.SaveChangesAsync(cancellationToken);
 
             if (input.Address is not null)
             {
                 var address = new Address();
                 SetAddress(address, input.Address);
-                var addedAddress = sampleDataDbContext.Addresses.Add(address);
+                sampleDataDbContext.Addresses.Add(address);
                 await sampleDataDbContext.SaveChangesAsync(cancellationToken);
-                addedUser.Entity.Address = addedAddress.Entity;
+                user.Address = address;
             }
 
-            await AddEmployments(sampleDataDbContext, addedUser.Entity, input.Employments, cancellationToken);
+            await AddEmployments(sampleDataDbContext, user, input.Employments, cancellationToken);
 
             await trans.CommitAsync(cancellationToken);
 
-            return new(default, addedUser.Entity);
+            return new(default, user);
         }
         catch (Exception ex)
         {
@@ -75,9 +76,18 @@ public class UserService(
             if (input.Address is not null)
             {
                 var address = sampleDataDbContext.Addresses.SingleOrDefault(e => e.Id == input.UserId);
-                if (address != null)
+                if (address is null)
+                {
+                    address = new();
+                    SetAddress(address, input.Address);
+                    sampleDataDbContext.Addresses.Add(address);
+                    await sampleDataDbContext.SaveChangesAsync(cancellationToken);
+                    existingUser.Address = address;
+                }
+                else
                 {
                     SetAddress(address, input.Address);
+                    existingUser.Address = address;
                 }
             }
 
@@ -87,7 +97,7 @@ public class UserService(
             existingUser.Employments.Clear();
 
             await AddEmployments(sampleDataDbContext, existingUser, input.Employments, cancellationToken);
-
+            
             await sampleDataDbContext.SaveChangesAsync(cancellationToken);
             await trans.CommitAsync(cancellationToken);
 
@@ -101,21 +111,20 @@ public class UserService(
         }
     }
 
-    public async Task<User?> GetUserAsync(int userId, CancellationToken cancellationToken = default)
+    public async Task<GenericOutput<User?>> GetUserAsync(int userId, CancellationToken cancellationToken = default)
     {
-
         using var sampleDataDbContext = await _sampleDataDbContextFactory.CreateDbContextAsync(cancellationToken);
         var user = await sampleDataDbContext.Users.Where(e => e.Id == userId).SingleOrDefaultAsync(cancellationToken);
 
         if (user == null)
         {
-            return null;
+            return new([new UserNotFoundError()], null);
         }
 
         user.Address = await sampleDataDbContext.Addresses.SingleOrDefaultAsync(e => e.Id == userId, cancellationToken);
         user.Employments = await sampleDataDbContext.Employments.Where(e => e.UserId == userId).ToListAsync(cancellationToken);
 
-        return user;
+        return new(null, user);
     }
 
     private static void SetUser(User user, UserInput input)
@@ -139,7 +148,7 @@ public class UserService(
         {
             foreach (var employment in employmentInputs)
             {
-                var addedEmployment = sampleDataDbContext.Employments.Add(new()
+                var newEmployment = new Employment()
                 {
                     Company = employment.Company,
                     EndDate = employment.EndDate,
@@ -147,9 +156,11 @@ public class UserService(
                     Salary = employment.Salary,
                     StartDate = employment.StartDate,
                     UserId = user.Id,
-                });
+                };
+
+                sampleDataDbContext.Employments.Add(newEmployment);
                 await sampleDataDbContext.SaveChangesAsync(cancellationToken);
-                user.Employments.Add(addedEmployment.Entity);
+                user.Employments.Add(newEmployment);
             }
         }
     }

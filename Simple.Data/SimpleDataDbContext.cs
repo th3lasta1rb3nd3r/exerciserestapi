@@ -5,9 +5,9 @@ namespace Simple.Data;
 
 public class SimpleDataDbContext(DbContextOptions<SimpleDataDbContext> options) : DbContext(options)
 {
-    public DbSet<User> Users { get; set; } = default!;
-    public DbSet<Address> Addresses { get; set; } = default!;
-    public DbSet<Employment> Employments { get; set; } = default!;
+    public virtual DbSet<User> Users { get; set; } = default!;
+    public virtual DbSet<Address> Addresses { get; set; } = default!;
+    public virtual DbSet<Employment> Employments { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

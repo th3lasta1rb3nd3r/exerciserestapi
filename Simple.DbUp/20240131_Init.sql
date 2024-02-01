@@ -46,10 +46,10 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Employments' AND SCHEMA_NAME(schema_id)='dbo')
 CREATE TABLE [dbo].[Employments](
-	[Id] [int] NOT NULL,
+	[Id] [int] identity(1,1 )NOT NULL,
 	[UserId] [int] NOT NULL,
 	[Company] [nvarchar](255) NOT NULL,
-	[MonthsOfExperience] [tinyint] NOT NULL,
+	[MonthsOfExperience] [smallint] NOT NULL,
 	[Salary] [float] NOT NULL,
 	[StartDate] [datetime] NOT NULL,
 	[EndDate] [datetime] NULL,

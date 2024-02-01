@@ -24,7 +24,7 @@ internal static class UserInputValidator
         {
             errors.Add(new EmptyFieldError(nameof(input.EmailAddress)));
         }
-        else if(IsValidEmail(input.EmailAddress))
+        else if (!IsValidEmail(input.EmailAddress))
         {
             errors.Add(new InvalidEmailAddressError());
         }

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="UserService.cs~RF9b2715f.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Simple.Inputs\Simple.Model.csproj" />
     <ProjectReference Include="..\Simple.Service.Interfaces\Simple.Service.Interfaces.csproj" />
   </ItemGroup>
